@@ -11,29 +11,29 @@ const DB_NAME = process.env.DB_NAME;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/secret', (req, res) => res.sendFile(path.join(_dirname, 'secret.html')));
+app.get('/secret', (req, res) => res.sendFile(path.join(__dirname, 'secret.html')));
 
 app.post('/secret', (req, res) => {
-	MongoClient.connect(URI, {useNewUrlParser: true}, (err, client) => {
-		if(err) {
-			console.log(err);
-		} else {
-			const db = client.db(DB_NAME);
-			const collection = db.collection('names')
-			const entry = {
-				name: req.body.name.toLowerCase(),
-				card: req.body.number + '_of_' + req.body.suit
-			};
-			collection.insertOne(entry, (err, result) => {
-				if(err) {
-					console.log(err);
-				} else {
-					res.send('Inserted into database');
-				}
-			})
-			db.close();
-		}
-	})
+    MongoClient.connect(URI, { useNewUrlParser: true }, (err, client) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const db = client.db(DB_NAME);
+            const collection = db.collection('names');
+            const entry = {
+                name: req.body.name.toLowerCase(),
+                card: req.body.number + '_of_' + req.body.suit
+            };
+            collection.insertOne(entry, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send('Inserted into database');
+                }
+            })
+            client.close();
+        }
+    })
 })
 
 app.get('/:param*', (req, res) => {
@@ -67,4 +67,4 @@ app.get('/:param*', (req, res) => {
     })
 })
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
